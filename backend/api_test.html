@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, button {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .tab.active {
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            background-color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>CampusConnect API Test</h1>
+    
+    <div class="tabs">
+        <div class="tab active" data-tab="register">Register</div>
+        <div class="tab" data-tab="verify">Verify Email</div>
+        <div class="tab" data-tab="login">Login</div>
+        <div class="tab" data-tab="profile">Profile</div>
+    </div>
+    
+    <div class="container">
+        <!-- Register Tab -->
+        <div class="tab-content active" id="register-tab">
+            <div class="card">
+                <h2>User Registration</h2>
+                <div class="form-group">
+                    <label for="reg-username">Username:</label>
+                    <input type="text" id="reg-username" value="testuser3">
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email:</label>
+                    <input type="email" id="reg-email" value="testuser3@college.edu">
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password:</label>
+                    <input type="password" id="reg-password" value="Test@123">
+                </div>
+                <div class="form-group">
+                    <label for="reg-name">Name:</label>
+                    <input type="text" id="reg-name" value="Test User">
+                </div>
+                <div class="form-group">
+                    <label for="reg-year">Year:</label>
+                    <input type="text" id="reg-year" value="3rd Year">
+                </div>
+                <div class="form-group">
+                    <label for="reg-department">Department:</label>
+                    <input type="text" id="reg-department" value="Computer Science">
+                </div>
+                <div class="form-group">
+                    <label for="reg-college">College:</label>
+                    <input type="text" id="reg-college" value="Test College">
+                </div>
+                <button id="register-btn">Register</button>
+                <h3>Response:</h3>
+                <div class="response" id="register-response"></div>
+            </div>
+        </div>
+        
+        <!-- Verify Email Tab -->
+        <div class="tab-content" id="verify-tab">
+            <div class="card">
+                <h2>Verify Email</h2>
+                <div class="form-group">
+                    <label for="verify-email">Email:</label>
+                    <input type="email" id="verify-email" value="testuser3@college.edu">
+                </div>
+                <div class="form-group">
+                    <label for="verify-code">Verification Code:</label>
+                    <input type="text" id="verify-code">
+                </div>
+                <button id="verify-btn">Verify Email</button>
+                <h3>Response:</h3>
+                <div class="response" id="verify-response"></div>
+            </div>
+        </div>
+        
+        <!-- Login Tab -->
+        <div class="tab-content" id="login-tab">
+            <div class="card">
+                <h2>User Login</h2>
+                <div class="form-group">
+                    <label for="login-email">Email:</label>
+                    <input type="email" id="login-email" value="testuser3@college.edu">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password:</label>
+                    <input type="password" id="login-password" value="Test@123">
+                </div>
+                <button id="login-btn">Login</button>
+                <h3>Response:</h3>
+                <div class="response" id="login-response"></div>
+            </div>
+        </div>
+        
+        <!-- Profile Tab -->
+        <div class="tab-content" id="profile-tab">
+            <div class="card">
+                <h2>User Profile</h2>
+                <div class="form-group">
+                    <label for="profile-token">Auth Token:</label>
+                    <input type="text" id="profile-token">
+                </div>
+                <button id="profile-btn">Get Profile</button>
+                <h3>Response:</h3>
+                <div class="response" id="profile-response"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Base URL for the API
+        const BASE_URL = "http://localhost:5000/api";
+        
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and tab contents
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding tab content
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
+        });
+        
+        // Register functionality
+        document.getElementById('register-btn').addEventListener('click', async () => {
+            const responseElement = document.getElementById('register-response');
+            responseElement.textContent = 'Sending request...';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/users/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: document.getElementById('reg-username').value,
+                        email: document.getElementById('reg-email').value,
+                        password: document.getElementById('reg-password').value,
+                        name: document.getElementById('reg-name').value,
+                        year: document.getElementById('reg-year').value,
+                        department: document.getElementById('reg-department').value,
+                        college: document.getElementById('reg-college').value
+                    })
+                });
+                
+                const data = await response.json();
+                responseElement.textContent = JSON.stringify(data, null, 2);
+                
+                // If registration successful, auto-fill verification email and code
+                if (response.ok && data.status === 'success' && data.data && data.data.verification_code) {
+                    document.getElementById('verify-email').value = document.getElementById('reg-email').value;
+                    document.getElementById('verify-code').value = data.data.verification_code;
+                    
+                    // Switch to verify tab
+                    document.querySelector('.tab[data-tab="verify"]').click();
+                }
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+            }
+        });
+        
+        // Verify email functionality
+        document.getElementById('verify-btn').addEventListener('click', async () => {
+            const responseElement = document.getElementById('verify-response');
+            responseElement.textContent = 'Sending request...';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/users/verify`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: document.getElementById('verify-email').value,
+                        verification_code: document.getElementById('verify-code').value
+                    })
+                });
+                
+                const data = await response.json();
+                responseElement.textContent = JSON.stringify(data, null, 2);
+                
+                // If verification successful, auto-fill login email and switch to login tab
+                if (response.ok && data.status === 'success' && data.data && data.data.token) {
+                    document.getElementById('login-email').value = document.getElementById('verify-email').value;
+                    document.getElementById('profile-token').value = data.data.token;
+                    
+                    // Switch to login tab
+                    document.querySelector('.tab[data-tab="login"]').click();
+                }
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+            }
+        });
+        
+        // Login functionality
+        document.getElementById('login-btn').addEventListener('click', async () => {
+            const responseElement = document.getElementById('login-response');
+            responseElement.textContent = 'Sending request...';
+            
+            try {
+                const response = await fetch(`${BASE_URL}/users/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: document.getElementById('login-email').value,
+                        password: document.getElementById('login-password').value
+                    })
+                });
+                
+                const data = await response.json();
+                responseElement.textContent = JSON.stringify(data, null, 2);
+                
+                // If login successful, auto-fill profile token and switch to profile tab
+                if (response.ok && data.status === 'success' && data.data && data.data.token) {
+                    document.getElementById('profile-token').value = data.data.token;
+                    
+                    // Switch to profile tab
+                    document.querySelector('.tab[data-tab="profile"]').click();
+                }
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+            }
+        });
+        
+        // Get profile functionality
+        document.getElementById('profile-btn').addEventListener('click', async () => {
+            const responseElement = document.getElementById('profile-response');
+            responseElement.textContent = 'Sending request...';
+            
+            try {
+                const token = document.getElementById('profile-token').value;
+                
+                if (!token) {
+                    responseElement.textContent = 'Error: Auth token is required';
+                    return;
+                }
+                
+                const response = await fetch(`${BASE_URL}/users/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                responseElement.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>

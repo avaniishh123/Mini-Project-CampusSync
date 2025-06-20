@@ -1,0 +1,52 @@
+# Node (Frontend)
+frontend/node_modules/
+frontend/.pnp
+frontend/.pnp.js
+frontend/coverage/
+frontend/build/
+frontend/.DS_Store
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Python (Backend)
+backend/**/__pycache__/
+backend/**/*.py[cod]
+backend/**/*$py.class
+backend/**/*.so
+backend/.Python
+backend/env/
+backend/venv/
+backend/ENV/
+backend/build/
+backend/develop-eggs/
+backend/dist/
+backend/downloads/
+backend/eggs/
+backend/.eggs/
+backend/lib64/
+backend/parts/
+backend/sdist/
+backend/var/
+backend/**/*.egg-info/
+backend/.installed.cfg
+backend/**/*.egg
+backend/.env
+backend/chatbot/.env
+backend/config.local.py
+
+# Logs
+backend/logs/*
+!backend/logs/.gitkeep
+backend/**/*.log
+
+# Uploads (create with .gitkeep files)
+backend/uploads/*/*
+!backend/uploads/*/.gitkeep
+backend/static/uploads/*/*
+!backend/static/uploads/*/.gitkeep

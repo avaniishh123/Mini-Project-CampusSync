@@ -1,0 +1,385 @@
+{
+  "users": [
+    {
+      "route": "/api/users/register",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "users.register"
+    },
+    {
+      "route": "/api/users/verify",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "users.verify_email"
+    },
+    {
+      "route": "/api/users/login",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "users.login"
+    },
+    {
+      "route": "/api/users/profile",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "users.get_profile"
+    },
+    {
+      "route": "/api/users/profile",
+      "methods": [
+        "PUT"
+      ],
+      "endpoint": "users.update_profile"
+    },
+    {
+      "route": "/api/users/change-password",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "users.change_password"
+    },
+    {
+      "route": "/api/users/users",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "users.get_users"
+    },
+    {
+      "route": "/api/users/users/<user_id>",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "users.get_user"
+    }
+  ],
+  "doubts": [
+    {
+      "route": "/questions",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "doubts.post_question"
+    },
+    {
+      "route": "/questions/<question_id>",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "doubts.get_question"
+    },
+    {
+      "route": "/questions/<question_id>/answers",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "doubts.post_answer"
+    }
+  ],
+  "notes": [
+    {
+      "route": "/upload",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "notes.upload_note"
+    },
+    {
+      "route": "/<note_id>",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "notes.get_note"
+    },
+    {
+      "route": "/search",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "notes.search_notes"
+    }
+  ],
+  "calendar": [
+    {
+      "route": "/events",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "calendar.get_events"
+    },
+    {
+      "route": "/events",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "calendar.create_event"
+    },
+    {
+      "route": "/events/<event_id>",
+      "methods": [
+        "DELETE"
+      ],
+      "endpoint": "calendar.delete_event"
+    }
+  ],
+  "feedback": [
+    {
+      "route": "/submit",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "feedback.submit_feedback"
+    },
+    {
+      "route": "/list",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "feedback.list_feedback"
+    },
+    {
+      "route": "/resolve/<feedback_id>",
+      "methods": [
+        "PUT"
+      ],
+      "endpoint": "feedback.resolve_feedback"
+    }
+  ],
+  "ai_tools": [
+    {
+      "route": "/recommendations",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "ai_tools.get_recommendations"
+    }
+  ],
+  "marketplace": [
+    {
+      "route": "/items",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "marketplace.list_items"
+    }
+  ],
+  "internships": [
+    {
+      "route": "/list",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "internships.list_internships"
+    }
+  ],
+  "study_groups": [
+    {
+      "route": "/api/study-groups",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "study_groups.create_study_group"
+    },
+    {
+      "route": "/api/study-groups",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "study_groups.get_study_groups"
+    },
+    {
+      "route": "/api/study-groups/<group_id>",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "study_groups.get_study_group"
+    },
+    {
+      "route": "/api/study-groups/<group_id>/join",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "study_groups.join_study_group"
+    },
+    {
+      "route": "/api/study-groups/<group_id>/leave",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "study_groups.leave_study_group"
+    }
+  ],
+  "social_feed": [
+    {
+      "route": "/api/social-feed/posts",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "social_feed.get_posts"
+    },
+    {
+      "route": "/api/social-feed/posts",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "social_feed.create_post"
+    },
+    {
+      "route": "/api/social-feed/posts/<post_id>",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "social_feed.get_post"
+    },
+    {
+      "route": "/api/social-feed/posts/<post_id>",
+      "methods": [
+        "PUT"
+      ],
+      "endpoint": "social_feed.update_post"
+    },
+    {
+      "route": "/api/social-feed/posts/<post_id>",
+      "methods": [
+        "DELETE"
+      ],
+      "endpoint": "social_feed.delete_post"
+    },
+    {
+      "route": "/api/social-feed/posts/<post_id>/comments",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "social_feed.create_comment"
+    },
+    {
+      "route": "/api/social-feed/posts/<post_id>/like",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "social_feed.like_post"
+    },
+    {
+      "route": "/api/social-feed/comments/<comment_id>/like",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "social_feed.like_comment"
+    }
+  ],
+  "resources": [
+    {
+      "route": "/api/resources/upload",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "resources.upload_resource"
+    },
+    {
+      "route": "/api/resources",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "resources.get_resources"
+    },
+    {
+      "route": "/api/resources/<resource_id>",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "resources.get_resource"
+    },
+    {
+      "route": "/api/resources/<resource_id>/download",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "resources.download_resource"
+    },
+    {
+      "route": "/api/resources/<resource_id>/vote",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "resources.vote_resource"
+    },
+    {
+      "route": "/api/resources/<resource_id>",
+      "methods": [
+        "DELETE"
+      ],
+      "endpoint": "resources.delete_resource"
+    }
+  ],
+  "opportunities": [
+    {
+      "route": "/api/opportunities",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "opportunities.get_opportunities"
+    },
+    {
+      "route": "/api/opportunities",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "opportunities.create_opportunity"
+    },
+    {
+      "route": "/api/opportunities/<opportunity_id>",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "opportunities.get_opportunity"
+    },
+    {
+      "route": "/api/opportunities/<opportunity_id>",
+      "methods": [
+        "PUT"
+      ],
+      "endpoint": "opportunities.update_opportunity"
+    },
+    {
+      "route": "/api/opportunities/<opportunity_id>",
+      "methods": [
+        "DELETE"
+      ],
+      "endpoint": "opportunities.delete_opportunity"
+    },
+    {
+      "route": "/api/opportunities/<opportunity_id>/apply",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "opportunities.apply_opportunity"
+    },
+    {
+      "route": "/api/opportunities/applications/<application_id>/status",
+      "methods": [
+        "PUT"
+      ],
+      "endpoint": "opportunities.update_application_status"
+    },
+    {
+      "route": "/api/opportunities/verify/<opportunity_id>",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "opportunities.verify_opportunity"
+    }
+  ],
+  "root": [
+    {
+      "route": "/",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "index"
+    }
+  ]
+}

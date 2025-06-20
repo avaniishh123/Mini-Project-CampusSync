@@ -1,0 +1,436 @@
+{
+  "users": [
+    {
+      "route": "/api/users/register",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "users.register",
+      "full_url": "http://localhost:5000/api/users/register"
+    },
+    {
+      "route": "/api/users/verify",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "users.verify_email",
+      "full_url": "http://localhost:5000/api/users/verify"
+    },
+    {
+      "route": "/api/users/login",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "users.login",
+      "full_url": "http://localhost:5000/api/users/login"
+    },
+    {
+      "route": "/api/users/profile",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "users.get_profile",
+      "full_url": "http://localhost:5000/api/users/profile"
+    },
+    {
+      "route": "/api/users/profile",
+      "methods": [
+        "PUT"
+      ],
+      "endpoint": "users.update_profile",
+      "full_url": "http://localhost:5000/api/users/profile"
+    },
+    {
+      "route": "/api/users/change-password",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "users.change_password",
+      "full_url": "http://localhost:5000/api/users/change-password"
+    },
+    {
+      "route": "/api/users/users",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "users.get_users",
+      "full_url": "http://localhost:5000/api/users/users"
+    },
+    {
+      "route": "/api/users/users/<user_id>",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "users.get_user",
+      "full_url": "http://localhost:5000/api/users/users/<user_id>"
+    }
+  ],
+  "doubts": [
+    {
+      "route": "/questions",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "doubts.post_question",
+      "full_url": "http://localhost:5000/questions"
+    },
+    {
+      "route": "/questions/<question_id>",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "doubts.get_question",
+      "full_url": "http://localhost:5000/questions/<question_id>"
+    },
+    {
+      "route": "/questions/<question_id>/answers",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "doubts.post_answer",
+      "full_url": "http://localhost:5000/questions/<question_id>/answers"
+    }
+  ],
+  "notes": [
+    {
+      "route": "/upload",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "notes.upload_note",
+      "full_url": "http://localhost:5000/upload"
+    },
+    {
+      "route": "/<note_id>",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "notes.get_note",
+      "full_url": "http://localhost:5000/<note_id>"
+    },
+    {
+      "route": "/search",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "notes.search_notes",
+      "full_url": "http://localhost:5000/search"
+    }
+  ],
+  "calendar": [
+    {
+      "route": "/events",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "calendar.get_events",
+      "full_url": "http://localhost:5000/events"
+    },
+    {
+      "route": "/events",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "calendar.create_event",
+      "full_url": "http://localhost:5000/events"
+    },
+    {
+      "route": "/events/<event_id>",
+      "methods": [
+        "DELETE"
+      ],
+      "endpoint": "calendar.delete_event",
+      "full_url": "http://localhost:5000/events/<event_id>"
+    }
+  ],
+  "feedback": [
+    {
+      "route": "/submit",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "feedback.submit_feedback",
+      "full_url": "http://localhost:5000/submit"
+    },
+    {
+      "route": "/list",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "feedback.list_feedback",
+      "full_url": "http://localhost:5000/list"
+    },
+    {
+      "route": "/resolve/<feedback_id>",
+      "methods": [
+        "PUT"
+      ],
+      "endpoint": "feedback.resolve_feedback",
+      "full_url": "http://localhost:5000/resolve/<feedback_id>"
+    }
+  ],
+  "ai_tools": [
+    {
+      "route": "/recommendations",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "ai_tools.get_recommendations",
+      "full_url": "http://localhost:5000/recommendations"
+    }
+  ],
+  "marketplace": [
+    {
+      "route": "/items",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "marketplace.list_items",
+      "full_url": "http://localhost:5000/items"
+    }
+  ],
+  "internships": [
+    {
+      "route": "/list",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "internships.list_internships",
+      "full_url": "http://localhost:5000/list"
+    }
+  ],
+  "study_groups": [
+    {
+      "route": "/api/study-groups",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "study_groups.create_study_group",
+      "full_url": "http://localhost:5000/api/study-groups"
+    },
+    {
+      "route": "/api/study-groups",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "study_groups.get_study_groups",
+      "full_url": "http://localhost:5000/api/study-groups"
+    },
+    {
+      "route": "/api/study-groups/<group_id>",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "study_groups.get_study_group",
+      "full_url": "http://localhost:5000/api/study-groups/<group_id>"
+    },
+    {
+      "route": "/api/study-groups/<group_id>/join",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "study_groups.join_study_group",
+      "full_url": "http://localhost:5000/api/study-groups/<group_id>/join"
+    },
+    {
+      "route": "/api/study-groups/<group_id>/leave",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "study_groups.leave_study_group",
+      "full_url": "http://localhost:5000/api/study-groups/<group_id>/leave"
+    }
+  ],
+  "social_feed": [
+    {
+      "route": "/api/social-feed/posts",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "social_feed.get_posts",
+      "full_url": "http://localhost:5000/api/social-feed/posts"
+    },
+    {
+      "route": "/api/social-feed/posts",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "social_feed.create_post",
+      "full_url": "http://localhost:5000/api/social-feed/posts"
+    },
+    {
+      "route": "/api/social-feed/posts/<post_id>",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "social_feed.get_post",
+      "full_url": "http://localhost:5000/api/social-feed/posts/<post_id>"
+    },
+    {
+      "route": "/api/social-feed/posts/<post_id>",
+      "methods": [
+        "PUT"
+      ],
+      "endpoint": "social_feed.update_post",
+      "full_url": "http://localhost:5000/api/social-feed/posts/<post_id>"
+    },
+    {
+      "route": "/api/social-feed/posts/<post_id>",
+      "methods": [
+        "DELETE"
+      ],
+      "endpoint": "social_feed.delete_post",
+      "full_url": "http://localhost:5000/api/social-feed/posts/<post_id>"
+    },
+    {
+      "route": "/api/social-feed/posts/<post_id>/comments",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "social_feed.create_comment",
+      "full_url": "http://localhost:5000/api/social-feed/posts/<post_id>/comments"
+    },
+    {
+      "route": "/api/social-feed/posts/<post_id>/like",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "social_feed.like_post",
+      "full_url": "http://localhost:5000/api/social-feed/posts/<post_id>/like"
+    },
+    {
+      "route": "/api/social-feed/comments/<comment_id>/like",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "social_feed.like_comment",
+      "full_url": "http://localhost:5000/api/social-feed/comments/<comment_id>/like"
+    }
+  ],
+  "resources": [
+    {
+      "route": "/api/resources/upload",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "resources.upload_resource",
+      "full_url": "http://localhost:5000/api/resources/upload"
+    },
+    {
+      "route": "/api/resources",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "resources.get_resources",
+      "full_url": "http://localhost:5000/api/resources"
+    },
+    {
+      "route": "/api/resources/<resource_id>",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "resources.get_resource",
+      "full_url": "http://localhost:5000/api/resources/<resource_id>"
+    },
+    {
+      "route": "/api/resources/<resource_id>/download",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "resources.download_resource",
+      "full_url": "http://localhost:5000/api/resources/<resource_id>/download"
+    },
+    {
+      "route": "/api/resources/<resource_id>/vote",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "resources.vote_resource",
+      "full_url": "http://localhost:5000/api/resources/<resource_id>/vote"
+    },
+    {
+      "route": "/api/resources/<resource_id>",
+      "methods": [
+        "DELETE"
+      ],
+      "endpoint": "resources.delete_resource",
+      "full_url": "http://localhost:5000/api/resources/<resource_id>"
+    }
+  ],
+  "opportunities": [
+    {
+      "route": "/api/opportunities",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "opportunities.get_opportunities",
+      "full_url": "http://localhost:5000/api/opportunities"
+    },
+    {
+      "route": "/api/opportunities",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "opportunities.create_opportunity",
+      "full_url": "http://localhost:5000/api/opportunities"
+    },
+    {
+      "route": "/api/opportunities/<opportunity_id>",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "opportunities.get_opportunity",
+      "full_url": "http://localhost:5000/api/opportunities/<opportunity_id>"
+    },
+    {
+      "route": "/api/opportunities/<opportunity_id>",
+      "methods": [
+        "PUT"
+      ],
+      "endpoint": "opportunities.update_opportunity",
+      "full_url": "http://localhost:5000/api/opportunities/<opportunity_id>"
+    },
+    {
+      "route": "/api/opportunities/<opportunity_id>",
+      "methods": [
+        "DELETE"
+      ],
+      "endpoint": "opportunities.delete_opportunity",
+      "full_url": "http://localhost:5000/api/opportunities/<opportunity_id>"
+    },
+    {
+      "route": "/api/opportunities/<opportunity_id>/apply",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "opportunities.apply_opportunity",
+      "full_url": "http://localhost:5000/api/opportunities/<opportunity_id>/apply"
+    },
+    {
+      "route": "/api/opportunities/applications/<application_id>/status",
+      "methods": [
+        "PUT"
+      ],
+      "endpoint": "opportunities.update_application_status",
+      "full_url": "http://localhost:5000/api/opportunities/applications/<application_id>/status"
+    },
+    {
+      "route": "/api/opportunities/verify/<opportunity_id>",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "opportunities.verify_opportunity",
+      "full_url": "http://localhost:5000/api/opportunities/verify/<opportunity_id>"
+    }
+  ],
+  "root": [
+    {
+      "route": "/",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "index",
+      "full_url": "http://localhost:5000/"
+    }
+  ]
+}

@@ -1,0 +1,648 @@
+# app/routes/users.py
+
+from flask import Blueprint, request, jsonify, current_app, g
+from app.db import get_db
+from datetime import datetime, timedelta
+from bson import ObjectId
+from werkzeug.security import generate_password_hash, check_password_hash
+import re
+import jwt
+import os
+import random
+import string
+import logging
+from functools import wraps
+
+logger = logging.getLogger(__name__)
+
+users_bp = Blueprint('users', __name__, url_prefix='/api/users')
+
+# Helper function to validate college email domain
+def is_valid_college_email(email, allowed_domains=None):
+    """Validate if the email belongs to an allowed college domain"""
+    if not allowed_domains:
+        # Default allowed domains - can be moved to configuration
+        allowed_domains = [
+            'edu', 'ac.in', 'edu.in', 'university.edu', 'college.edu'
+        ]
+    
+    domain = email.split('@')[-1]
+    
+    # Check if the domain ends with any of the allowed domains
+    return any(domain.endswith(d) for d in allowed_domains)
+
+# Generate verification code
+def generate_verification_code():
+    """Generate a 6-digit verification code"""
+    return ''.join(random.choices(string.digits, k=6))
+
+# Token required decorator
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        
+        # Check if token is in headers
+        if 'Authorization' in request.headers:
+            auth_header = request.headers['Authorization']
+            if auth_header.startswith('Bearer '):
+                token = auth_header.split(' ')[1]
+        
+        if not token:
+            return jsonify({
+                'status': 'error',
+                'message': 'Authentication token is missing'
+            }), 401
+        
+        try:
+            # Decode token
+            secret_key = current_app.config.get('SECRET_KEY')
+            payload = jwt.decode(token, secret_key, algorithms=['HS256'])
+            
+            # Get user from database
+            db = get_db()
+            current_user = db.users.find_one({'_id': ObjectId(payload['user_id'])})
+            
+            if not current_user:
+                return jsonify({
+                    'status': 'error',
+                    'message': 'Invalid authentication token'
+                }), 401
+            
+            # Store user info in g object for use in route handlers
+            g.user = current_user
+            
+        except jwt.ExpiredSignatureError:
+            return jsonify({
+                'status': 'error',
+                'message': 'Authentication token has expired'
+            }), 401
+        except jwt.InvalidTokenError:
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid authentication token'
+            }), 401
+        
+        return f(*args, **kwargs)
+    
+    return decorated
+
+# Email verification required decorator
+def verification_required(f):
+    @wraps(f)
+    @token_required
+    def decorated(*args, **kwargs):
+        if not g.user.get('is_verified', False):
+            return jsonify({
+                'status': 'error',
+                'message': 'Email verification required'
+            }), 403
+        
+        return f(*args, **kwargs)
+    
+    return decorated
+
+@users_bp.route('/register', methods=['POST'])
+def register():
+    """Register a new user with college email verification"""
+    try:
+        data = request.get_json()
+        
+        # Validate required fields
+        required_fields = ['username', 'email', 'password', 'name', 'year', 'department', 'college']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({
+                    'status': 'error',
+                    'message': f'Missing required field: {field}'
+                }), 400
+        
+        # Validate email format
+        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_regex, data['email']):
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid email format'
+            }), 400
+        
+        # Validate college email domain
+        if not is_valid_college_email(data['email']):
+            return jsonify({
+                'status': 'error',
+                'message': 'Please use a valid college email address'
+            }), 400
+        
+        # Validate password strength
+        if len(data['password']) < 8:
+            return jsonify({
+                'status': 'error',
+                'message': 'Password must be at least 8 characters long'
+            }), 400
+        
+        db = get_db()
+        
+        # Check if username or email already exists
+        existing_user = db.users.find_one({
+            '$or': [
+                {'username': data['username']},
+                {'email': data['email']}
+            ]
+        })
+        
+        if existing_user:
+            if existing_user['email'] == data['email']:
+                return jsonify({
+                    'status': 'error',
+                    'message': 'Email already registered'
+                }), 400
+            else:
+                return jsonify({
+                    'status': 'error',
+                    'message': 'Username already taken'
+                }), 400
+        
+        # Generate verification code
+        verification_code = generate_verification_code()
+        verification_expires = datetime.utcnow() + timedelta(hours=24)
+        
+        # Create new user
+        new_user = {
+            'username': data['username'],
+            'email': data['email'],
+            'password_hash': generate_password_hash(data['password']),
+            'name': data['name'],
+            'year': data['year'],
+            'department': data['department'],
+            'college': data['college'],
+            'created_at': datetime.utcnow(),
+            'last_active': datetime.utcnow(),
+            'role': 'student',  # Default role
+            'profile_picture': None,
+            'bio': data.get('bio'),
+            'social_links': data.get('social_links', {}),
+            'skills': data.get('skills', []),
+            'notifications': [],
+            'is_verified': False,  # Email verification status
+            'verification': {
+                'code': verification_code,
+                'expires_at': verification_expires
+            },
+            'preferences': {
+                'email_notifications': True,
+                'push_notifications': True
+            }
+        }
+        
+        result = db.users.insert_one(new_user)
+        
+        # In a real application, send verification email here
+        # For now, just return the code in the response (for testing)
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Registration successful. Please verify your email.',
+            'data': {
+                'user_id': str(result.inserted_id),
+                'verification_code': verification_code  # Remove in production
+            }
+        }), 201
+        
+    except Exception as e:
+        logger.error(f"Error in user registration: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': 'An error occurred during registration'
+        }), 500
+
+@users_bp.route('/verify', methods=['POST'])
+def verify_email():
+    """Verify user's email with verification code"""
+    try:
+        data = request.get_json()
+        
+        # Validate required fields
+        if 'email' not in data or 'verification_code' not in data:
+            return jsonify({
+                'status': 'error',
+                'message': 'Email and verification code are required'
+            }), 400
+        
+        db = get_db()
+        
+        # Find user by email
+        user = db.users.find_one({'email': data['email']})
+        
+        if not user:
+            return jsonify({
+                'status': 'error',
+                'message': 'User not found'
+            }), 404
+        
+        # Check if user is already verified
+        if user.get('is_verified', False):
+            return jsonify({
+                'status': 'success',
+                'message': 'Email already verified'
+            }), 200
+        
+        # Check if verification code is valid
+        verification = user.get('verification', {})
+        if not verification:
+            return jsonify({
+                'status': 'error',
+                'message': 'Verification code not found'
+            }), 400
+        
+        # Check if verification code has expired
+        expires_at = verification.get('expires_at')
+        if expires_at and expires_at < datetime.utcnow():
+            return jsonify({
+                'status': 'error',
+                'message': 'Verification code has expired'
+            }), 400
+        
+        # Check if verification code matches
+        if verification.get('code') != data['verification_code']:
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid verification code'
+            }), 400
+        
+        # Update user verification status
+        db.users.update_one(
+            {'_id': user['_id']},
+            {
+                '$set': {
+                    'is_verified': True,
+                    'verification': None
+                }
+            }
+        )
+        
+        # Generate JWT token
+        secret_key = current_app.config.get('SECRET_KEY')
+        token = jwt.encode(
+            {
+                'user_id': str(user['_id']),
+                'exp': datetime.utcnow() + timedelta(days=1)
+            },
+            secret_key,
+            algorithm='HS256'
+        )
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Email verification successful',
+            'data': {
+                'token': token,
+                'user_id': str(user['_id'])
+            }
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error in email verification: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': 'An error occurred during verification'
+        }), 500
+
+@users_bp.route('/login', methods=['POST'])
+def login():
+    """Login user and return JWT token"""
+    try:
+        data = request.get_json()
+        
+        # Validate required fields
+        if 'email' not in data or 'password' not in data:
+            return jsonify({
+                'status': 'error',
+                'message': 'Email and password are required'
+            }), 400
+        
+        db = get_db()
+        
+        # Find user by email
+        user = db.users.find_one({'email': data['email']})
+        
+        if not user:
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid email or password'
+            }), 401
+        
+        # Check if password is correct
+        if not check_password_hash(user['password_hash'], data['password']):
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid email or password'
+            }), 401
+        
+        # Check if user is verified
+        if not user.get('is_verified', False):
+            # Generate new verification code
+            verification_code = generate_verification_code()
+            verification_expires = datetime.utcnow() + timedelta(hours=24)
+            
+            # Update verification code
+            db.users.update_one(
+                {'_id': user['_id']},
+                {
+                    '$set': {
+                        'verification': {
+                            'code': verification_code,
+                            'expires_at': verification_expires
+                        }
+                    }
+                }
+            )
+            
+            # In a real application, send verification email here
+            
+            return jsonify({
+                'status': 'error',
+                'message': 'Email not verified. A new verification code has been sent.',
+                'data': {
+                    'verification_required': True,
+                    'verification_code': verification_code  # Remove in production
+                }
+            }), 403
+        
+        # Update last active timestamp
+        db.users.update_one(
+            {'_id': user['_id']},
+            {'$set': {'last_active': datetime.utcnow()}}
+        )
+        
+        # Generate JWT token
+        secret_key = current_app.config.get('SECRET_KEY')
+        token = jwt.encode(
+            {
+                'user_id': str(user['_id']),
+                'exp': datetime.utcnow() + timedelta(days=1)
+            },
+            secret_key,
+            algorithm='HS256'
+        )
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Login successful',
+            'data': {
+                'token': token,
+                'user': {
+                    'id': str(user['_id']),
+                    'username': user['username'],
+                    'name': user['name'],
+                    'email': user['email'],
+                    'role': user['role']
+                }
+            }
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error in user login: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': 'An error occurred during login'
+        }), 500
+
+@users_bp.route('/profile', methods=['GET'])
+@token_required
+def get_profile():
+    """Get current user's profile"""
+    try:
+        user = g.user
+        
+        return jsonify({
+            'status': 'success',
+            'data': {
+                'id': str(user['_id']),
+                'username': user['username'],
+                'email': user['email'],
+                'name': user['name'],
+                'year': user['year'],
+                'department': user['department'],
+                'college': user['college'],
+                'created_at': user['created_at'].isoformat(),
+                'last_active': user['last_active'].isoformat(),
+                'role': user['role'],
+                'profile_picture': user['profile_picture'],
+                'bio': user['bio'],
+                'social_links': user['social_links'],
+                'skills': user.get('skills', []),
+                'is_verified': user.get('is_verified', False),
+                'preferences': user['preferences']
+            }
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error in get profile: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': 'An error occurred while retrieving profile'
+        }), 500
+
+@users_bp.route('/profile', methods=['PUT'])
+@token_required
+@verification_required
+def update_profile():
+    """Update current user's profile"""
+    try:
+        data = request.get_json()
+        
+        # Fields that can be updated
+        allowed_fields = [
+            'name', 'bio', 'social_links', 'profile_picture', 
+            'skills', 'preferences', 'year', 'department'
+        ]
+        
+        # Filter out fields that are not allowed to be updated
+        update_fields = {k: v for k, v in data.items() if k in allowed_fields}
+        
+        # Add last active timestamp
+        update_fields['last_active'] = datetime.utcnow()
+        
+        db = get_db()
+        
+        # Update user profile
+        result = db.users.update_one(
+            {'_id': g.user['_id']},
+            {'$set': update_fields}
+        )
+        
+        if result.modified_count == 0:
+            return jsonify({
+                'status': 'error',
+                'message': 'No changes were made to the profile'
+            }), 400
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Profile updated successfully'
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error in update profile: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': 'An error occurred while updating profile'
+        }), 500
+
+@users_bp.route('/change-password', methods=['POST'])
+@token_required
+@verification_required
+def change_password():
+    """Change user's password"""
+    try:
+        data = request.get_json()
+        
+        # Validate required fields
+        if 'current_password' not in data or 'new_password' not in data:
+            return jsonify({
+                'status': 'error',
+                'message': 'Current password and new password are required'
+            }), 400
+        
+        # Validate new password strength
+        if len(data['new_password']) < 8:
+            return jsonify({
+                'status': 'error',
+                'message': 'New password must be at least 8 characters long'
+            }), 400
+        
+        # Check if current password is correct
+        if not check_password_hash(g.user['password_hash'], data['current_password']):
+            return jsonify({
+                'status': 'error',
+                'message': 'Current password is incorrect'
+            }), 401
+        
+        # Update password
+        db = get_db()
+        db.users.update_one(
+            {'_id': g.user['_id']},
+            {
+                '$set': {
+                    'password_hash': generate_password_hash(data['new_password']),
+                    'last_active': datetime.utcnow()
+                }
+            }
+        )
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Password changed successfully'
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error in change password: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': 'An error occurred while changing password'
+        }), 500
+
+@users_bp.route('/users', methods=['GET'])
+@token_required
+@verification_required
+def get_users():
+    """Get list of users (with optional filtering)"""
+    try:
+        # Get query parameters
+        name = request.args.get('name')
+        department = request.args.get('department')
+        year = request.args.get('year')
+        college = request.args.get('college')
+        skills = request.args.get('skills')
+        
+        # Build query
+        query = {}
+        
+        if name:
+            query['name'] = {'$regex': name, '$options': 'i'}
+        
+        if department:
+            query['department'] = {'$regex': department, '$options': 'i'}
+        
+        if year:
+            query['year'] = year
+        
+        if college:
+            query['college'] = {'$regex': college, '$options': 'i'}
+        
+        if skills:
+            skills_list = [s.strip() for s in skills.split(',')]
+            query['skills'] = {'$in': skills_list}
+        
+        # Only get verified users
+        query['is_verified'] = True
+        
+        db = get_db()
+        
+        # Get users from database
+        users = list(db.users.find(
+            query,
+            {
+                'password_hash': 0,
+                'verification': 0,
+                'notifications': 0
+            }
+        ).limit(50))
+        
+        # Convert ObjectId to string
+        for user in users:
+            user['_id'] = str(user['_id'])
+            user['created_at'] = user['created_at'].isoformat()
+            user['last_active'] = user['last_active'].isoformat()
+        
+        return jsonify({
+            'status': 'success',
+            'data': users
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error in get users: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': 'An error occurred while retrieving users'
+        }), 500
+
+@users_bp.route('/users/<user_id>', methods=['GET'])
+@token_required
+@verification_required
+def get_user(user_id):
+    """Get a specific user's profile"""
+    try:
+        db = get_db()
+        
+        # Find user by ID
+        user = db.users.find_one(
+            {'_id': ObjectId(user_id)},
+            {
+                'password_hash': 0,
+                'verification': 0,
+                'notifications': 0
+            }
+        )
+        
+        if not user:
+            return jsonify({
+                'status': 'error',
+                'message': 'User not found'
+            }), 404
+        
+        # Convert ObjectId to string
+        user['_id'] = str(user['_id'])
+        user['created_at'] = user['created_at'].isoformat()
+        user['last_active'] = user['last_active'].isoformat()
+        
+        return jsonify({
+            'status': 'success',
+            'data': user
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error in get user: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': 'An error occurred while retrieving user'
+        }), 500

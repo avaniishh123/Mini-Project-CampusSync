@@ -1,0 +1,24 @@
+/* Thin, but visible scrollbar for posts list */
+.thin-scrollbar {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent; /* Firefox: thumb color and track color */
+}
+
+.thin-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  background: transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5); /* Light gray with transparency */
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+.thin-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: rgba(107, 114, 128, 0.7); /* Darker on hover */
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}

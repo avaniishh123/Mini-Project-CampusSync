@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Image Uploader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #4f46e5;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4338ca;
+        }
+        .preview {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .preview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 50%;
+            border: 3px solid #4f46e5;
+        }
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Profile Image Uploader</h1>
+    <p>Use this form to upload your profile image directly to the server.</p>
+    
+    <div class="form-group">
+        <label for="userId">User ID:</label>
+        <input type="text" id="userId" placeholder="Enter your user ID" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="token">Authentication Token:</label>
+        <input type="text" id="token" placeholder="Enter your authentication token" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="profileImage">Select Profile Image:</label>
+        <input type="file" id="profileImage" accept="image/*" required>
+    </div>
+    
+    <div class="preview" id="imagePreview" style="display: none;">
+        <h3>Image Preview:</h3>
+        <img id="previewImg" src="#" alt="Preview">
+    </div>
+    
+    <button id="uploadBtn">Upload Image</button>
+    
+    <div id="status" class="status" style="display: none;"></div>
+    
+    <script>
+        // Preview the selected image
+        document.getElementById('profileImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Handle the upload
+        document.getElementById('uploadBtn').addEventListener('click', async function() {
+            const userId = document.getElementById('userId').value.trim();
+            const token = document.getElementById('token').value.trim();
+            const fileInput = document.getElementById('profileImage');
+            const statusDiv = document.getElementById('status');
+            
+            if (!userId || !token || !fileInput.files.length) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = 'Please fill in all fields and select an image.';
+                statusDiv.style.display = 'block';
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            
+            // Validate file type
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+            if (!validTypes.includes(file.type)) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = 'Please select a valid image file (JPEG, PNG, or GIF).';
+                statusDiv.style.display = 'block';
+                return;
+            }
+            
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = 'File size should be less than 5MB.';
+                statusDiv.style.display = 'block';
+                return;
+            }
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('profile_image', file);
+            
+            try {
+                statusDiv.className = 'status';
+                statusDiv.textContent = 'Uploading...';
+                statusDiv.style.display = 'block';
+                
+                // Send the request
+                const response = await fetch(`http://localhost:5000/api/users/${userId}/profile-image`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.status === 'success') {
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = `
+                        <p>Image uploaded successfully!</p>
+                        <p>Profile image URL: ${result.data.profile_picture}</p>
+                        <p>Please refresh your application to see the changes.</p>
+                    `;
+                } else {
+                    throw new Error(result.message || 'Failed to upload image');
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `Error: ${error.message || 'Unknown error occurred'}`;
+            }
+        });
+    </script>
+</body>
+</html>

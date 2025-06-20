@@ -1,0 +1,109 @@
+[Feature: User Registration]
+
+To register a new user:
+1. Navigate to the registration page or screen in the app.
+2. Fill in the details like name, email, password.
+3. Submit the form to complete registration.
+4. The system stores user data in the database securely.
+
+To login:
+1. Go to the login page.
+2. Enter your email and password.
+3. Submit to log into your account.
+
+[Feature: Notes]
+
+To upload a note:
+1. Open the "Notes" section in the app.
+2. Click or tap on "Add Note".
+3. Fill in the title, description, and optionally select a tag or priority.
+4. Click "Submit" or "Save" to store the note.
+
+To view all your notes:
+- Navigate to the Notes page; all your uploaded notes will be listed.
+
+To delete a note:
+- Click the delete icon next to the note you want to remove.
+
+[Feature: Study Groups]
+
+To view all study groups:
+1. Navigate to the "Study Groups" section.
+2. You'll see a list of available groups.
+
+To join a study group:
+1. Click on the group you're interested in.
+2. Press the "Join Group" button.
+
+To create a new study group:
+1. Go to the Study Groups page.
+2. Click on "Create Group".
+3. Enter group title, subject, and description.
+4. Submit to create the group.
+
+[Feature: Doubt Discussion]
+
+To ask a doubt:
+1. Navigate to the "Doubts" section.
+2. Click on "Ask Doubt".
+3. Fill in your question with title and description.
+4. Submit to post the doubt.
+
+To answer someone else's doubt:
+1. Click on a doubt post.
+2. Add your answer in the reply section.
+3. Submit your response.
+
+[Feature: Internship Updates]
+
+To view internship opportunities:
+1. Go to the "Internships" section.
+2. You’ll see a list of internship postings with links and details.
+
+To post a new internship:
+1. Admin users can go to "Add Internship".
+2. Fill in company name, position, link, and description.
+3. Submit the internship.
+
+[Feature: Calendar (Reminders & Events)]
+
+To add an event or reminder:
+1. Open the "Calendar" section.
+2. Click "Add Reminder".
+3. Fill in the title, description, and date/time.
+4. Save the reminder to store it.
+
+To view events:
+- Navigate to the Calendar page — all upcoming reminders and events will be shown.
+
+[Feature: Feedback]
+
+To give feedback:
+1. Go to the "Feedback" section.
+2. Fill in the feedback form (name, email, comment).
+3. Submit it to send feedback to the admin or team.
+
+[Feature: Marketplace]
+
+To post a product for sale:
+1. Open the "Marketplace" section.
+2. Click on "Post Item".
+3. Enter product name, description, price, and contact info.
+4. Submit to publish your post.
+
+To browse listings:
+- All listed items will appear on the Marketplace main screen.
+
+[Feature: AI Tools Section]
+
+To use AI tools (if enabled):
+1. Go to the "AI Tools" section in the app.
+2. Select the tool (e.g., chatbot, summarizer).
+3. Enter your input and get the result based on AI functionality.
+
+[General Information]
+
+- Most features require login.
+- Your actions (like notes or feedback) are tied to your user account.
+- Navigation is usually from the sidebar or bottom navigation in the mobile app.
+

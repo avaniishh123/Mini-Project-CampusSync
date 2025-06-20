@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --animation-btn: 0.25s;
+    --animation-input: 0.2s;
+  }
+
+  body {
+    @apply bg-background-light text-gray-900;
+  }
+
+  /* Material Design Typography */
+  h1 {
+    @apply text-4xl font-medium tracking-tight mb-4;
+  }
+
+  h2 {
+    @apply text-3xl font-medium tracking-tight mb-3;
+  }
+
+  h3 {
+    @apply text-2xl font-medium mb-2;
+  }
+}
+
+@layer components {
+  /* Material Design 3 Button Styles */
+  .btn-primary {
+    @apply relative overflow-hidden px-6 py-2 bg-primary-main text-primary-contrast rounded-full
+           font-medium shadow-elevation-1 duration-300 ease-material
+           hover:shadow-elevation-2 active:shadow-elevation-1
+           disabled:opacity-50 disabled:cursor-not-allowed
+           focus:outline-none focus:ring-2 focus:ring-primary-light focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply relative overflow-hidden px-6 py-2 bg-secondary-main text-secondary-contrast rounded-full
+           font-medium shadow-elevation-1 duration-300 ease-material
+           hover:shadow-elevation-2 active:shadow-elevation-1
+           disabled:opacity-50 disabled:cursor-not-allowed
+           focus:outline-none focus:ring-2 focus:ring-secondary-light focus:ring-offset-2;
+  }
+
+  /* Material Design 3 Card Styles */
+  .card {
+    @apply bg-white rounded-xl shadow-elevation-1 p-6
+           hover:shadow-elevation-2 duration-300 ease-material
+           animate-fade-in;
+  }
+
+  /* Material Design 3 Input Styles */
+  .input-primary {
+    @apply block w-full px-4 py-2 rounded-lg border-2 border-gray-300
+           focus:border-primary-main focus:ring-1 focus:ring-primary-light
+           duration-300 ease-material;
+  }
+
+  /* Material Design 3 Chip Styles */
+  .chip {
+    @apply inline-flex items-center px-4 py-1 rounded-full
+           text-sm font-medium bg-surface-main
+           hover:bg-opacity-80 duration-300 ease-material
+           cursor-pointer select-none;
+  }
+
+  /* Material Design 3 FAB Styles */
+  .fab {
+    @apply fixed bottom-6 right-6 p-4 rounded-full
+           bg-primary-main text-primary-contrast
+           shadow-elevation-3 hover:shadow-elevation-4
+           duration-300 ease-material transform hover:scale-105
+           focus:outline-none focus:ring-2 focus:ring-primary-light focus:ring-offset-2;
+  }
+
+  /* Material Design 3 Navigation Item Styles */
+  .nav-item {
+    @apply flex items-center px-4 py-2 rounded-lg
+           text-gray-700 hover:text-primary-main
+           hover:bg-primary-light hover:bg-opacity-10
+           duration-300 ease-material cursor-pointer;
+  }
+
+  .nav-item.active {
+    @apply text-primary-main bg-primary-light bg-opacity-10;
+  }
+
+  /* Material Design 3 Tab Styles */
+  .tab {
+    @apply px-6 py-2 text-sm font-medium text-gray-700
+           hover:text-primary-main hover:bg-primary-light hover:bg-opacity-10
+           duration-300 ease-material cursor-pointer
+           border-b-2 border-transparent;
+  }
+
+  .tab.active {
+    @apply text-primary-main border-primary-main;
+  }
+}
+
+/* Custom Animations */
+.ripple {
+  @apply absolute bg-white bg-opacity-30 rounded-full transform -translate-x-1/2 -translate-y-1/2;
+}
+
+/* Smooth Page Transitions */
+.page-enter {
+  @apply opacity-0;
+}
+
+.page-enter-active {
+  @apply opacity-100 duration-300 ease-material;
+}
+
+.page-exit {
+  @apply opacity-100;
+}
+
+.page-exit-active {
+  @apply opacity-0 duration-300 ease-material;
+}
