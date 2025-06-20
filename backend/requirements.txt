@@ -14,6 +14,6 @@ flask-jwt-extended==4.6.0
 flask-limiter==3.5.0
 # Sentiment analysis dependencies
 transformers==4.35.2
-torch==2.1.1
+torch==2.2.0
 # Text summarization dependencies
 google-generativeai==0.3.1
