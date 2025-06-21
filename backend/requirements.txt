@@ -16,6 +16,6 @@ flask-limiter==3.5.0
 # Sentiment analysis dependencies
 transformers==4.35.2
 # Using a flexible version constraint for PyTorch to ensure compatibility with various platforms
-torch
+torch>=2.0.0
 # Text summarization dependencies
 google-generativeai==0.3.1
