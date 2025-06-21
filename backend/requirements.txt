@@ -5,14 +5,17 @@ flask-cors==4.0.0
 python-dotenv==1.0.0
 Werkzeug==3.0.1
 DNSPython==2.6.0
+gunicorn==21.2.0
 requests==2.31.0
 pyjwt==2.8.0
 passlib==1.7.4
 loguru==0.7.2
 flask-jwt-extended==4.6.0
 flask-limiter==3.5.0
+# Comment out heavy dependencies for demo deployment
 # Sentiment analysis dependencies
 transformers==4.35.2
-torch==2.2.0
+# Using a flexible version constraint for PyTorch to ensure compatibility with various platforms
+torch
 # Text summarization dependencies
 google-generativeai==0.3.1

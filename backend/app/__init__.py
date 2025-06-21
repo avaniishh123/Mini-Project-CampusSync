@@ -1,6 +1,6 @@
 # app/__init__.py
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
@@ -48,10 +48,11 @@ def create_app():
     mongo.init_app(app)
     init_db(app)
     
-    # Configure CORS to allow all origins and methods
+    # Configure CORS to allow specific origins
+    allowed_origins = os.environ.get('ALLOWED_ORIGINS', '*').split(',')
     CORS(app, resources={
         r"/*": {
-            "origins": "http://localhost:3000",
+            "origins": allowed_origins,  # Use environment variable or default to all
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"],
             "supports_credentials": True
@@ -201,5 +202,20 @@ def create_app():
         })
         response.status_code = 500
         return response
+    
+    # Add a health check endpoint
+    @app.route('/api/v1/health', methods=['GET'])
+    def health_check():
+        return jsonify({
+            'status': 'healthy',
+            'message': 'CampusSync API is running',
+            'version': '1.0.0',
+            'timestamp': time.time()
+        })
+    
+    # Add a route to serve the test page
+    @app.route('/', methods=['GET'])
+    def index():
+        return send_from_directory(static_folder, 'test.html')
     
     return app

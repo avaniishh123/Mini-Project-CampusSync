@@ -1,0 +1,27 @@
+# Regular run command - backend only
+#run = "cd backend && pip install -r requirements.txt && python run.py"
+
+# Full-stack run command - build frontend and run backend
+run = "chmod +x build_and_run.sh && ./build_and_run.sh"
+language = "python3"
+entrypoint = "backend/run.py"
+
+[nix]
+channel = "stable-22_11"
+
+[env]
+PYTHONPATH = "${PYTHONPATH}:${workspaceDir}/backend"
+PORT = "443"
+FLASK_HOST = "0.0.0.0"
+DEBUG = "True"
+FLASK_ENV = "development"
+SECRET_KEY = "your_secret_key_here_for_testing"
+# NOTE: For security, it's better to use the Secrets UI for sensitive values
+# like database connection strings and API keys
+
+[packager]
+ignoredPaths = [".git", "frontend/node_modules"]
+
+[deployment]
+run = ["sh", "-c", "cd backend && python run.py"]
+deploymentTarget = "cloudrun"
