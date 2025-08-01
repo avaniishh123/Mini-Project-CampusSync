@@ -77,7 +77,7 @@ This project is configured for deployment on Render using the `render.yaml` file
    - Refer to the detailed project report below to understand the complete working, architecture, and flow of CampusSync.
    - It covers everything from code structure, feature implementation, to user interaction flow and deployment steps.
    
-   [CampusSync-NEW-REPORT-UPDATED-2.pdf](https://github.com/user-attachments/files/21545597/CampusSync-NEW-REPORT-UPDATED-2.pdf)
+   Documentation Link:- [CampusSync-NEW-REPORT-UPDATED-2.pdf](https://github.com/user-attachments/files/21545597/CampusSync-NEW-REPORT-UPDATED-2.pdf)
 
 5. **Verify Deployment**:
    - Once deployed, check both frontend and backend logs for any errors
