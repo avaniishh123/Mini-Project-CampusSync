@@ -73,6 +73,9 @@ This project is configured for deployment on Render using the `render.yaml` file
    - Create a MongoDB Atlas cluster if you don't have one
    - Add your MongoDB connection string to the backend service environment variables
 
+5. **Documentation**:
+   [CampusSync-NEW-REPORT-UPDATED-2.pdf](https://github.com/user-attachments/files/21545597/CampusSync-NEW-REPORT-UPDATED-2.pdf)
+
 5. **Verify Deployment**:
    - Once deployed, check both frontend and backend logs for any errors
    - Test the application functionality to ensure everything is working
